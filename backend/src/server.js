@@ -8,9 +8,14 @@ dotenv.config();
 
 const { connectDB, syncDB } = require('./config/database');
 connectDB();
+const User = require('./models/User');
+const Post = require('./models/Post');
+User.hasMany(Post, { foreignKey: 'userId' });
+Post.belongsTo(User, { foreignKey: 'userId' });
 syncDB();
 
 const authRoutes = require('./routes/auth');
+const postRoutes = require('./routes/posts');
 
 const app = express();
 const server = http.createServer(app);
@@ -26,6 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/posts', postRoutes);
 
 app.get('/', (req, res) => {
   res.json({
