@@ -21,12 +21,17 @@ const Comment = require('./models/Comment');
 Comment.belongsTo(User, { foreignKey: 'userId' });
 Comment.belongsTo(Post, { foreignKey: 'postId' });
 Post.hasMany(Comment, { foreignKey: 'postId' });
+const Follow = require('./models/Follow');
+Follow.belongsTo(User, { as: 'Follower', foreignKey: 'followerId' });
+Follow.belongsTo(User, { as: 'Following', foreignKey: 'followingId' });
+
 syncDB();
 
 const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/posts');
 const likeRoutes = require('./routes/likes');
 const commentRoutes = require('./routes/comments');
+const followRoutes = require('./routes/follows');
 
 const app = express();
 const server = http.createServer(app);
@@ -45,6 +50,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/likes', likeRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/follows', followRoutes);
 
 app.get('/', (req, res) => {
   res.json({
